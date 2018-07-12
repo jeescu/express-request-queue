@@ -2,7 +2,7 @@
 
 > Uses stack and Async/Await approach
 
-Use this for your express routes if you need those concurrent requests to behave synchronously. If you don't need every request to be queued for a route (unique requests), we can do that too!
+Use this for your express routes if you need those concurrent requests to behave in sequence. If you don't need every request to be queued, set a config and specify your unique identifier to group the queues.
 
 ## Installation
 
