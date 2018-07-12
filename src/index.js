@@ -116,4 +116,4 @@ class RequestQueue {
 	}
 }
 
-export default RequestQueue;
+module.exports = RequestQueue;
