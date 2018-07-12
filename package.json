@@ -1,6 +1,6 @@
 {
   "name": "express-request-queue",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Make synchronous calls to your express routes.",
   "repository": "https://github.com/jeescu/express-sync-middleware",
   "author": "John Edward <johnedwardescuyos@gmail.com>",
@@ -19,6 +19,10 @@
     "test": "jest --watch",
     "lint": "esw -w src test"
   },
+  "files": [
+    "dist",
+    "src"
+  ],
   "keywords": [],
   "dependencies": {
     "babel-cli": "^6.26.0",
