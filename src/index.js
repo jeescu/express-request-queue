@@ -3,12 +3,13 @@
 /**
  * Queue
  */
-class SyncMiddleware {
-	constructor(config) {
-		this.config = config;
+
+class Queue {
+	constructor() {
+		this.fn = null;
 		this.stacks = [];
 	}
-	
+
 	/**
 	 * @method _async
 	 * @description wraps callable request
@@ -16,16 +17,40 @@ class SyncMiddleware {
 	 * 
 	 * @param {Function} fn, xp request function
 	 */
-	sync = (fn) => {
-		return (req, res, next) => {
-			this.stacks.push({
-				fn,
-				http: { req, res, next }
-			});
 
-			if (this.stacks.length == 1) {
-				this._emitSync();
-			}
+	sync = (fn) => {
+		this.fn = fn;
+
+		return (req, res, next) => {
+			this.push(fn, { req, res, next });
+			this.emit();
+		}
+	}
+
+	setFn = (fn) => {
+		this.fn = fn;
+	}
+
+	/**
+	 * @method push
+	 * @description adds request to the stack
+	 * 
+	 * @param {Function} fn, xp request function
+	 * @param {*} http, xp req, res, next objects
+	 */
+
+	push = (http) => {
+		this.stacks.push({ http });
+	}
+
+	/**
+	 * @method emit
+	 * @description emits worker method '_emitSync'
+	 */
+
+	emit = () => {
+		if (this.stacks.length == 1) {
+			this._emitSync();
 		}
 	}
 
@@ -33,19 +58,62 @@ class SyncMiddleware {
 	 * @method _emitSync
 	 * @description calls the next queued request
 	 */
+
 	_emitSync = async () => {
 		const queuedRequest = this.stacks[0];
-	
+
 		if (queuedRequest) {
 			const { req, res, next } = queuedRequest['http'];
-			const requestCall = queuedRequest['fn'];
-	
-			await requestCall(req, res, next);
-	
+
+			await this.fn(req, res, next);
+
 			this.stacks.shift();
 			this._emitSync();
 		}
 	}
 }
 
-export default SyncMiddleware;
+/**
+ * Request Queue
+ */
+class RequestQueue {
+	constructor(config) {
+		this.queues = {};
+		this.config = config;
+	}
+	
+	run = (fn) => {
+		if (this.config) {
+			// unique queue
+			if (this.config.unique) {
+				if (!this.config.from || !this.config.name) {
+					throw new Error('Additional config elements are required: from, to');
+				}
+
+				return this._groupRun(fn);
+			}
+		
+		} else {
+			// normal queue
+			return new Queue().sync(fn);
+		}
+	}
+
+	_groupRun = (fn) => {
+		return (req, res, next) => {
+			const id = req[this.config.from][this.config.name];
+
+			if (this.queues[id]) {
+				this.queues[id].push({ req, res, next });
+				this.queues[id].emit();
+			} else {
+				this.queues[id] = new Queue();
+				this.queues[id].setFn(fn);
+				this.queues[id].push({ req, res, next });
+				this.queues[id].emit();
+			}
+		}
+	}
+}
+
+export default RequestQueue;
