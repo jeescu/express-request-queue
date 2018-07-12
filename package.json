@@ -1,6 +1,6 @@
 {
   "name": "express-request-queue",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Make synchronous calls to your express routes.",
   "repository": "https://github.com/jeescu/express-sync-middleware",
   "author": "John Edward <johnedwardescuyos@gmail.com>",
