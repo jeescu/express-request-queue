@@ -11,9 +11,9 @@ class Queue {
 	}
 
 	/**
-	 * @method _async
+	 * @method _sync
 	 * @description wraps callable request
-	 * and added to the stack
+	 * and added to the single stack
 	 * 
 	 * @param {Function} fn, xp request function
 	 */
@@ -22,10 +22,15 @@ class Queue {
 		this.fn = fn;
 
 		return (req, res, next) => {
-			this.push(fn, { req, res, next });
+			this.push({ req, res, next });
 			this.emit();
 		}
 	}
+
+	/**
+	 * @method setFn
+	 * @description set req callback for this queue
+	 */
 
 	setFn = (fn) => {
 		this.fn = fn;
@@ -35,8 +40,7 @@ class Queue {
 	 * @method push
 	 * @description adds request to the stack
 	 * 
-	 * @param {Function} fn, xp request function
-	 * @param {*} http, xp req, res, next objects
+	 * @param {*} http, xp req, res and next objects
 	 */
 
 	push = (http) => {

@@ -34,7 +34,7 @@ const config = {
     name: 'id' // name of the field to reference from
 }
 
-const q  = RequestQ(config);
+const q = RequestQ(config);
 ```
 
 ## License
