@@ -1,6 +1,6 @@
 {
   "name": "express-request-queue",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Make synchronous calls to your express routes.",
   "repository": "https://github.com/jeescu/express-sync-middleware",
   "author": "John Edward <johnedwardescuyos@gmail.com>",
@@ -13,11 +13,11 @@
   "scripts": {
     "prestart": "npm run -s build",
     "start": "node dist/index.js",
-    "dev": "nodemon src/index.js --exec \"node -r dotenv/config -r babel-register\"",
-    "clean": "rimraf dist",
-    "build": "npm run clean && mkdir -p dist && babel src -s -D -d dist",
+    "dev": "nodemon src/index.js --exec \"node -r dotenv/config -r @babel/register\"",
+    "clean": "npx del-cli --force dist",
+    "build": "npm run clean && npx make-dir-cli dist && babel src --copy-files --out-dir dist --source-maps true",
     "test": "jest --watch",
-    "lint": "esw -w src test"
+    "lint": "esw --watch src test"
   },
   "files": [
     "dist",
@@ -25,30 +25,30 @@
   ],
   "keywords": [],
   "dependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-plugin-transform-class-properties": "^6.24.1",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-preset-env": "^1.6.1",
-    "body-parser": "^1.18.2",
-    "rimraf": "^2.6.2"
+    "@babel/cli": "7.14.5",
+    "@babel/core": "7.14.5",
+    "@babel/plugin-proposal-class-properties": "7.14.5",
+    "@babel/plugin-proposal-object-rest-spread": "7.14.5",
+    "@babel/preset-env": "7.14.5",
+    "body-parser": "1.19.0"
   },
   "devDependencies": {
-    "babel-eslint": "^8.0.3",
-    "babel-jest": "^21.2.0",
-    "babel-register": "^6.26.0",
-    "dotenv": "^4.0.0",
-    "eslint": "^4.12.1",
-    "eslint-plugin-import": "^2.8.0",
-    "eslint-plugin-jest": "^21.3.2",
-    "eslint-watch": "^3.1.3",
-    "jest": "^21.2.1",
-    "nodemon": "^1.12.1",
-    "supertest": "^3.0.0"
+    "@babel/eslint-parser": "7.14.5",
+    "@babel/register": "7.14.5",
+    "babel-jest": "27.0.2",
+    "dotenv": "10.0.0",
+    "eslint": "7.28.0",
+    "eslint-plugin-import": "2.23.4",
+    "eslint-plugin-jest": "24.3.6",
+    "eslint-watch": "7.0.0",
+    "jest": "27.0.4",
+    "nodemon": "2.0.7",
+    "supertest": "6.1.3"
   },
   "babel": {
     "presets": [
       [
-        "env",
+        "@babel/preset-env",
         {
           "targets": {
             "node": "current"
@@ -57,12 +57,12 @@
       ]
     ],
     "plugins": [
-      "transform-object-rest-spread",
-      "transform-class-properties"
+      "@babel/plugin-proposal-object-rest-spread",
+      "@babel/plugin-proposal-class-properties"
     ]
   },
   "eslintConfig": {
-    "parser": "babel-eslint",
+    "parser": "@babel/eslint-parser",
     "plugins": [
       "import",
       "jest"
